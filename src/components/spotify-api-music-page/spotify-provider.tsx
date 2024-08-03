@@ -41,12 +41,10 @@ export function SpotifyContextProvider({ children }: { children: React.ReactNode
   const code = searchParams.get('code')
   React.useEffect(() => {
     if (!code) {
-      console.info('no code')
       return
     }
     const code_verifier = window.localStorage.getItem('spotify_code_verifier')
     if (!code_verifier) {
-      console.info('no code_verifier')
       return
     }
     const existing_access_token = window.localStorage.getItem('access_token')
