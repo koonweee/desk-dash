@@ -110,6 +110,10 @@ export function SpotifyContextProvider({ children }: { children: React.ReactNode
           'Content-Type': 'application/json',
         },
       });
+      if (response.status === 204) {
+        return null;
+      }
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       json = await response.json() as ReturnType;
       if (json.error && json.error.status === 401) {
