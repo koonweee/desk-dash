@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { House, Music } from "lucide-react";
+import { House, LucideGithub, Music } from "lucide-react";
 import React, { type ReactElement, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
 
@@ -22,6 +22,11 @@ export const NAV_BAR_ITEMS: CarouselNavBarItem[] = [
     icon: <Music size={ICON_SIZE} />,
     key: 'music',
   },
+  {
+    title: 'Work',
+    icon: <LucideGithub size={ICON_SIZE} />,
+    key: 'work',
+  }
 ]
 
 export function NavBar(

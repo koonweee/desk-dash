@@ -1,12 +1,13 @@
 'use client'
-import HomeAssistantIframe from "@/components/home-assistant/home-assistant-iframe";
+import HomeAssistantIframe from "@/components/home-assistant-page/home-assistant-iframe";
 import { NAV_BAR_ITEMS, NavBar } from "@/components/nav-bar";
 import SpotifyAPIMusicPage from "@/components/spotify-api-music-page";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
+import WorkPage from "@/components/work-page";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
-export default function InnerPage() {
+export default function MainPage() {
   const [api, setApi] = React.useState<CarouselApi>()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -50,6 +51,9 @@ export default function InnerPage() {
                 }
                 {
                   key === 'music' && <SpotifyAPIMusicPage />
+                }
+                {
+                  key === 'work' && <WorkPage />
                 }
               </CarouselItem>)
           })}

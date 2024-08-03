@@ -34,7 +34,6 @@ export function AvailableDevices() {
   })
   const devices = getPlaybackDevicesQuery.data?.devices;
   const activeDevice = devices?.find((device) => device.is_active);
-  console.log(activeDevice)
   const [selectedDevice, setSelectedDevice] = React.useState<SpotifyApi.UserDevice | undefined>(activeDevice);
   // Sync selected device with active device
   React.useEffect(() => {
