@@ -2,6 +2,7 @@
 
 import { useSpotifyContext } from '@/components/spotify-api-music-page/spotify-provider';
 import { DelayedSelect, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { SpeakerIcon } from 'lucide-react';
 import React, { useMemo } from 'react';
@@ -48,15 +49,15 @@ export function AvailableDevices() {
       }}
     >
       <SelectTrigger
-        className="m-0 flex w-[160px] flex-row items-center justify-normal gap-2 border-0 p-2 focus:ring-0"
+        className="m-0 flex w-full flex-row items-center justify-center gap-2 border-0 px-4 py-6 focus:ring-0"
         asChild
       >
         <SpeakerIcon size="16" />
         {selectedDevice ? selectedDevice.name : 'Select a device'}
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="bg-background/70">
         {devices.map((device) => (
-          <SelectItem key={device.id} value={getIdentifier(device)}>
+          <SelectItem key={device.id} value={getIdentifier(device)} className="bg-transparent">
             {device.name}
           </SelectItem>
         ))}

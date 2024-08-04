@@ -8,6 +8,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { CaretUpIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import React from 'react';
+import { cn } from '@/lib/utils';
+import { useSwipeable } from 'react-swipeable';
 
 export function SpotifyAPIMusicPageInner() {
   const spotifyContext = useSpotifyContext();
@@ -16,12 +18,21 @@ export function SpotifyAPIMusicPageInner() {
 
   const { onLogin } = useSpotifyLogin();
 
-  const [accordionValue, setAccordionValue] = React.useState<string | undefined>(undefined);
+  const [showPlaylists, setShowPlaylists] = React.useState(false);
 
   const loginButton = <button onClick={onLogin}>Log in with Spotify</button>;
 
+  const swipeHandlers = useSwipeable({
+    onSwipedUp: () => {
+      setShowPlaylists(true);
+    },
+    onSwipedDown: () => {
+      setShowPlaylists(false);
+    },
+  });
+
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-12">
+    <div className="flex h-full w-full flex-col items-center justify-center gap-0">
       {isLoggedIn ? (
         <>
           {/* Actual Spotify API */}
@@ -31,23 +42,22 @@ export function SpotifyAPIMusicPageInner() {
             </div>
             <NowPlaying />
           </div>
-
-          <Accordion
-            type="single"
-            collapsible
-            className="z-10 w-full"
-            value={accordionValue}
-            onValueChange={setAccordionValue}
-          >
-            <AccordionItem value="item-1" className="border-0">
-              <AccordionTrigger asChild className="flex w-full flex-row items-center justify-center p-0">
-                <CaretUpIcon className="h-12 w-12 opacity-50" />
-              </AccordionTrigger>
-              <AccordionContent>
-                <UserPlaylists />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <div className="flex w-full flex-col gap-2" {...swipeHandlers}>
+            <button className="flex w-full justify-center" onClick={() => setShowPlaylists(!showPlaylists)}>
+              <CaretUpIcon
+                className={cn('h-12 w-12 opacity-50 transition-all duration-500 ease-in-out', {
+                  'rotate-180': showPlaylists,
+                })}
+              />
+            </button>
+            <div
+              className={cn({
+                hidden: !showPlaylists,
+              })}
+            >
+              <UserPlaylists />
+            </div>
+          </div>
         </>
       ) : (
         loginButton

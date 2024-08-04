@@ -1,5 +1,6 @@
 'use client';
 
+import { useBackgroundContext } from '@/components/background-provider';
 import { useSpotifyContext } from '@/components/spotify-api-music-page/spotify-provider';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
@@ -104,6 +105,13 @@ export default function NowPlaying() {
     },
   });
 
+  const { setBackgroundUrl } = useBackgroundContext();
+
+  // Set background image to album art
+  React.useEffect(() => {
+    setBackgroundUrl(albumImage);
+  }, [albumImage, setBackgroundUrl]);
+
   return (
     <>
       <div className="z-10 flex w-[90%] flex-col items-center gap-1">
@@ -141,34 +149,11 @@ export default function NowPlaying() {
             </button>
           </div>
 
-          <div className="flex w-full flex-row items-start justify-between px-2 opacity-70">
-            <div className="max-w-[60%] truncate">{item?.name}</div>
-            <div className="max-w-[40%] truncate">{artistsString}</div>
+          <div className="flex w-full flex-col items-center py-4">
+            <div className="max-w-[75%] truncate text-xl">{item?.name ?? 'No music selected'}</div>
+            <div className="max-w-[40%] truncate text-base">{artistsString ?? '-'}</div>
           </div>
         </>
-        {/* <div className="w-full">
-          {device?.volume_percent !== undefined &&
-            <Slider max={100} step={1} value={[volume]} onValueChange={
-              (value) => {
-                setVolume(value[0] ?? volume);
-              }
-            }
-              onValueCommit={(values) => {
-                setPlaybackVolume(values[0] ?? volume);
-              }}
-            />}
-        </div> */}
-      </div>
-      <div className="absolute top-0 h-full w-full overflow-hidden">
-        {albumImage && (
-          <Image
-            src={albumImage}
-            alt={album?.name}
-            width={640}
-            height={640}
-            className="h-full w-full scale-125 object-cover blur-lg brightness-50"
-          />
-        )}
       </div>
     </>
   );

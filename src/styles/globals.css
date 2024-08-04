@@ -33,6 +33,7 @@
 
   .dark {
     --background: 0 0% 7%;
+    --card-background: rgba(18, 18, 18, 0.55);
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;

@@ -11,10 +11,10 @@ export default function GitHubCard() {
   const [selectedNotificationIds, setSelectedNotificationIds] = React.useState<number[]>([]);
 
   return (
-    <div className="flex flex-col items-center border border-white">
+    <div className="bg-card-background flex flex-col items-center border border-accent">
       <div
         className={cn('flex w-full flex-row items-center justify-between px-4 py-3 text-start text-sm', {
-          'border-b border-white': isLoading || notifications.length > 0,
+          'border-b border-white/90': isLoading || notifications.length > 0,
         })}
       >
         <div className="">GitHub ({notifications.length})</div>

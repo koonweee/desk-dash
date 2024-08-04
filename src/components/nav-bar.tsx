@@ -49,10 +49,7 @@ export function NavBar({
   const { notifications } = useGithubContext();
 
   return (
-    <div
-      className="absolute bottom-0 flex w-full items-center justify-between bg-background/20 px-3 py-2 text-white"
-      {...swipeHandlers}
-    >
+    <div className="absolute bottom-0 flex w-full items-center justify-between px-3 py-2 text-white" {...swipeHandlers}>
       <div className="flex items-center gap-2">
         {NAV_BAR_ITEMS.map((item, index) => {
           const { title, icon, key } = item;

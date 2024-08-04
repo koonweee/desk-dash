@@ -2,8 +2,11 @@
 
 import { useSpotifyContext } from '@/components/spotify-api-music-page/spotify-provider';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
+import { PlayCircleIcon } from 'lucide-react';
 import Image from 'next/image';
+import React from 'react';
 
 export default function UserPlaylists() {
   const spotifyContext = useSpotifyContext();
@@ -13,11 +16,7 @@ export default function UserPlaylists() {
     controls: { playURI },
   } = spotifyContext;
 
-  const {
-    data: userPlaylists,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: userPlaylists, isLoading } = useQuery({
     queryKey: ['spotify-user-playlists'],
     queryFn: async () => {
       if (!isLoggedIn) {
@@ -33,6 +32,8 @@ export default function UserPlaylists() {
     },
   });
 
+  const [selectedPlaylistURI, setSelectedPlaylistURI] = React.useState<string | undefined>(undefined);
+
   const { items } = userPlaylists ?? {};
   const playlistsFound = items?.length && items.length > 0;
   return (
@@ -47,7 +48,10 @@ export default function UserPlaylists() {
               return (
                 <CarouselItem key={index} className="basis-1/4">
                   {playlistImage ? (
-                    <button onClick={() => playURI(uri)}>
+                    <button
+                      onClick={() => setSelectedPlaylistURI(selectedPlaylistURI === uri ? undefined : uri)}
+                      className="relative"
+                    >
                       <Image
                         key={index}
                         src={playlistImage}
@@ -56,6 +60,23 @@ export default function UserPlaylists() {
                         height={640}
                         className="aspect-square object-cover"
                       />
+                      <div
+                        className={cn(
+                          'absolute top-0 flex h-full w-full flex-col items-center justify-center gap-4 bg-background/70 p-4 text-sm',
+                          {
+                            hidden: selectedPlaylistURI !== uri,
+                          },
+                        )}
+                      >
+                        {name}
+                        <button
+                          onClick={() => {
+                            playURI(uri);
+                          }}
+                        >
+                          <PlayCircleIcon size={24} />
+                        </button>
+                      </div>
                     </button>
                   ) : null}
                 </CarouselItem>
