@@ -12,22 +12,22 @@ export interface CarouselNavBarItem {
   key: string;
 }
 
-const ICON_SIZE = 20;
+const ICON_CLASS_NAME = 'h-5 w-5';
 
 export const NAV_BAR_ITEMS: CarouselNavBarItem[] = [
   {
     title: 'Home',
-    icon: <House size={ICON_SIZE} />,
+    icon: <House className={ICON_CLASS_NAME} />,
     key: 'home',
   },
   {
     title: 'Music',
-    icon: <Music size={ICON_SIZE} />,
+    icon: <Music className={ICON_CLASS_NAME} />,
     key: 'music',
   },
   {
     title: 'Work',
-    icon: <LucideGithub size={ICON_SIZE} />,
+    icon: <LucideGithub className={ICON_CLASS_NAME} />,
     key: 'work',
   },
 ];
