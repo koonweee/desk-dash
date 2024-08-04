@@ -24,7 +24,7 @@ export function SpotifyAPIMusicPageInner() {
   const loginButton = <button onClick={onLogin}>Log in with Spotify</button>
 
   return (
-    <div className="flex flex-col items-center gap-12 w-full">
+    <div className="flex h-full flex-col items-center justify-center gap-12 w-full">
 
       {
         isLoggedIn ? <>

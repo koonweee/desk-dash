@@ -1,4 +1,5 @@
 'use client'
+import { GithubContextProvider } from "@/components/github-provider";
 import HomeAssistantIframe from "@/components/home-assistant-page/home-assistant-iframe";
 import { NAV_BAR_ITEMS, NavBar } from "@/components/nav-bar";
 import SpotifyAPIMusicPage from "@/components/spotify-api-music-page";
@@ -34,32 +35,36 @@ export default function MainPage() {
     }
   }, [currentNavBarItem, router])
 
+  console.count('MainPage render')
+
   return (
     <div className="flex flex-col h-full justify-between w-full">
-      <Carousel setApi={setApi} className="h-full" opts={{
-        loop: true,
-        watchDrag: false,
-        startIndex: currentPageIndex
-      }}>
-        <CarouselContent className="h-full">
-          {NAV_BAR_ITEMS.map((item) => {
-            const { key } = item
-            return (
-              <CarouselItem key={key} className="flex items-center justify-center bg-background">
-                {
-                  key === 'home' && <HomeAssistantIframe view="default_view" className="w-full h-full" />
-                }
-                {
-                  key === 'music' && <SpotifyAPIMusicPage />
-                }
-                {
-                  key === 'work' && <WorkPage />
-                }
-              </CarouselItem>)
-          })}
-        </CarouselContent>
-      </Carousel>
-      <NavBar currentPage={current} setCurrentPage={api?.scrollTo} goToNext={api?.scrollNext} goToPrev={api?.scrollPrev} />
+      <GithubContextProvider>
+        <Carousel setApi={setApi} className="h-full" opts={{
+          loop: true,
+          watchDrag: false,
+          startIndex: currentPageIndex
+        }}>
+          <CarouselContent className="h-full">
+            {NAV_BAR_ITEMS.map((item) => {
+              const { key } = item
+              return (
+                <CarouselItem key={key} className="flex justify-center bg-background">
+                  {
+                    key === 'home' && <HomeAssistantIframe view="default_view" className="w-full h-full" />
+                  }
+                  {
+                    key === 'music' && <SpotifyAPIMusicPage />
+                  }
+                  {
+                    key === 'work' && <WorkPage />
+                  }
+                </CarouselItem>)
+            })}
+          </CarouselContent>
+        </Carousel>
+        <NavBar currentPage={current} setCurrentPage={api?.scrollTo} goToNext={api?.scrollNext} goToPrev={api?.scrollPrev} />
+      </GithubContextProvider>
     </div>
   )
 }

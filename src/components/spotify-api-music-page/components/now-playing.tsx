@@ -66,9 +66,6 @@ export default function NowPlaying() {
   const onNoDevice = () => {
     setOverlayIconThenClear(<div className="text-xl">Select a device</div>);
   }
-
-
-
   const updateVolumeOnSwipe = (deltaY: number) => {
     if (!device) {
       return onNoDevice();
