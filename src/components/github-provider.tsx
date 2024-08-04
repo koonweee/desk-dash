@@ -1,17 +1,17 @@
-import { Octokit, type RestEndpointMethodTypes } from "@octokit/rest";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import React from "react";
+import { Octokit, type RestEndpointMethodTypes } from '@octokit/rest';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import React from 'react';
 
 const POLL_INTERVAL = 1000 * 60; // 1 minute
 
-export type GithubNotification = RestEndpointMethodTypes["activity"]["listNotificationsForAuthenticatedUser"]["response"]["data"][number];
+export type GithubNotification =
+  RestEndpointMethodTypes['activity']['listNotificationsForAuthenticatedUser']['response']['data'][number];
 
 export interface GithubContextType {
   notifications: GithubNotification[];
   markNotificationsDone: (notificationIds: number[]) => void;
   isLoading: boolean;
 }
-
 
 export const GithubContext = React.createContext<GithubContextType | null>(null);
 
@@ -21,28 +21,28 @@ const octokit = new Octokit({
 
 export function GithubContextProvider({ children }: { children: React.ReactNode }) {
   const notificationsQuery = useQuery<GithubNotification[]>({
-    queryKey: ["notifications"],
+    queryKey: ['notifications'],
     queryFn: async () => {
       const ghNotifications = await octokit.activity.listNotificationsForAuthenticatedUser({
         headers: {
-          'If-None-Match': '' // Disable caching
-        }
+          'If-None-Match': '', // Disable caching
+        },
       });
       return ghNotifications.data;
     },
     refetchInterval: POLL_INTERVAL,
   });
 
-  const markNotificationsDoneMutation = useMutation(
-    {
-      mutationFn: async (notificationIds: number[]) => {
-        const responses = await Promise.all((notificationIds).map((id) => octokit.activity.markThreadAsDone({ thread_id: id })));
-      },
-      onSuccess: () => {
-        void notificationsQuery.refetch();
-      }
+  const markNotificationsDoneMutation = useMutation({
+    mutationFn: async (notificationIds: number[]) => {
+      const responses = await Promise.all(
+        notificationIds.map((id) => octokit.activity.markThreadAsDone({ thread_id: id })),
+      );
     },
-  );
+    onSuccess: () => {
+      void notificationsQuery.refetch();
+    },
+  });
 
   const { data: notifications = [], isLoading } = notificationsQuery;
   const { mutate: markNotificationsDone } = markNotificationsDoneMutation;

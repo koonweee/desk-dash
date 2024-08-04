@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import { useSpotifyContext } from "@/components/spotify-api-music-page/spotify-provider";
-import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import { MusicIcon, PauseIcon, PlayIcon, SkipBackIcon, SkipForwardIcon, Volume1Icon, Volume2Icon } from "lucide-react";
-import Image from "next/image";
-import React from "react";
-import { type SwipeEventData, useSwipeable } from "react-swipeable";
+import { useSpotifyContext } from '@/components/spotify-api-music-page/spotify-provider';
+import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { MusicIcon, PauseIcon, PlayIcon, SkipBackIcon, SkipForwardIcon, Volume1Icon, Volume2Icon } from 'lucide-react';
+import Image from 'next/image';
+import React from 'react';
+import { type SwipeEventData, useSwipeable } from 'react-swipeable';
 
 const SPOTIFY_REFETCH_INTERVAL = 1000; // 1 second
 
@@ -14,21 +14,17 @@ export default function NowPlaying() {
   const spotifyContext = useSpotifyContext();
   const {
     isLoggedIn,
-    controls: {
-      onPause,
-      onPlay,
-      onNext,
-      onPrevious,
-      setPlaybackVolume,
-    },
-    spotifyFetchWithRefresh
+    controls: { onPause, onPlay, onNext, onPrevious, setPlaybackVolume },
+    spotifyFetchWithRefresh,
   } = spotifyContext;
 
   const currentPlaybackQuery = useQuery({
     queryKey: ['currentPlayback'],
     queryFn: async () => {
       if (isLoggedIn) {
-        return await spotifyFetchWithRefresh<SpotifyApi.CurrentPlaybackResponse>(['https://api.spotify.com/v1/me/player']);
+        return await spotifyFetchWithRefresh<SpotifyApi.CurrentPlaybackResponse>([
+          'https://api.spotify.com/v1/me/player',
+        ]);
       }
     },
     enabled: isLoggedIn,
@@ -45,9 +41,9 @@ export default function NowPlaying() {
     setTimeout(() => {
       setShowAlbumArtOverlay(null);
     }, 1000);
-  }
+  };
 
-  const { album, artists } = item as SpotifyApi.TrackObjectFull ?? {
+  const { album, artists } = (item as SpotifyApi.TrackObjectFull) ?? {
     album: undefined,
     artists: [],
   };
@@ -65,7 +61,7 @@ export default function NowPlaying() {
 
   const onNoDevice = () => {
     setOverlayIconThenClear(<div className="text-xl">Select a device</div>);
-  }
+  };
   const updateVolumeOnSwipe = (deltaY: number) => {
     if (!device) {
       return onNoDevice();
@@ -80,10 +76,10 @@ export default function NowPlaying() {
         {overlayIcon}
         {roundedVolume}%
       </div>
-    )
+    );
     setOverlayIconThenClear(overlay);
     setPlaybackVolume(roundedVolume);
-  }
+  };
 
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => {
@@ -108,58 +104,46 @@ export default function NowPlaying() {
     },
   });
 
-
-
   return (
     <>
-      <div className='flex flex-col items-center gap-1 w-[90%] z-10 '>
+      <div className="z-10 flex w-[90%] flex-col items-center gap-1">
         <>
-          <div className="relative aspect-square rounded overflow-hidden w-full" {...swipeHandlers} >
-            {
-              albumImage ? <Image
-                src={albumImage}
-                alt={album?.name}
-                width={1280}
-                height={1280}
-                className="w-full aspect-square"
-              /> : <div className="flex w-full aspect-square bg-muted flex-col items-center justify-center">
+          <div className="relative aspect-square w-full overflow-hidden rounded" {...swipeHandlers}>
+            {albumImage ? (
+              <Image src={albumImage} alt={album?.name} width={1280} height={1280} className="aspect-square w-full" />
+            ) : (
+              <div className="flex aspect-square w-full flex-col items-center justify-center bg-muted">
                 <MusicIcon size={128} />
               </div>
-            }
-            <button className={
-              cn(
-                'opacity-0 absolute inset-0 flex items-center justify-center',
-                'transition-all ease-in-out duration-500',
+            )}
+            <button
+              className={cn(
+                'absolute inset-0 flex items-center justify-center opacity-0',
+                'transition-all duration-500 ease-in-out',
                 {
                   'bg-black bg-opacity-55 opacity-80': !!showAlbumArtOverlay,
+                },
+              )}
+              onClick={() => {
+                if (!device) {
+                  return onNoDevice();
                 }
-              )
-            } onClick={() => {
-              if (!device) {
-                return onNoDevice();
-              }
-              if (is_playing) {
-                onPause();
-                setOverlayIconThenClear(<PauseIcon size={64} />);
-              } else {
-                onPlay();
-                setOverlayIconThenClear(<PlayIcon size={64} />);
-              }
-            }}
+                if (is_playing) {
+                  onPause();
+                  setOverlayIconThenClear(<PauseIcon size={64} />);
+                } else {
+                  onPlay();
+                  setOverlayIconThenClear(<PlayIcon size={64} />);
+                }
+              }}
             >
-              {
-                showAlbumArtOverlay
-              }
+              {showAlbumArtOverlay}
             </button>
           </div>
 
-          <div className="flex flex-row justify-between items-start w-full px-2 opacity-70">
-            <div className="max-w-[60%] truncate">
-              {item?.name}
-            </div>
-            <div className='max-w-[40%] truncate'>
-              {artistsString}
-            </div>
+          <div className="flex w-full flex-row items-start justify-between px-2 opacity-70">
+            <div className="max-w-[60%] truncate">{item?.name}</div>
+            <div className="max-w-[40%] truncate">{artistsString}</div>
           </div>
         </>
         {/* <div className="w-full">
@@ -175,18 +159,17 @@ export default function NowPlaying() {
             />}
         </div> */}
       </div>
-      <div className="absolute top-0 w-full h-full overflow-hidden">
-        {
-          albumImage && <Image
+      <div className="absolute top-0 h-full w-full overflow-hidden">
+        {albumImage && (
+          <Image
             src={albumImage}
             alt={album?.name}
             width={640}
             height={640}
-            className="h-full w-full object-cover blur-lg brightness-50 scale-125"
+            className="h-full w-full scale-125 object-cover blur-lg brightness-50"
           />
-        }
+        )}
       </div>
-
     </>
   );
 }

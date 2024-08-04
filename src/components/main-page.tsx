@@ -1,74 +1,74 @@
-'use client'
-import { GithubContextProvider } from "@/components/github-provider";
-import HomeAssistantIframe from "@/components/home-assistant-page/home-assistant-iframe";
-import { NAV_BAR_ITEMS, NavBar } from "@/components/nav-bar";
-import SpotifyAPIMusicPage from "@/components/spotify-api-music-page";
-import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
-import WorkPage from "@/components/work-page";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
+'use client';
+import { GithubContextProvider } from '@/components/github-provider';
+import HomeAssistantIframe from '@/components/home-assistant-page/home-assistant-iframe';
+import { NAV_BAR_ITEMS, NavBar } from '@/components/nav-bar';
+import SpotifyAPIMusicPage from '@/components/spotify-api-music-page';
+import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '@/components/ui/carousel';
+import WorkPage from '@/components/work-page';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect } from 'react';
 
 export default function MainPage() {
-  const [api, setApi] = React.useState<CarouselApi>()
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const currentPage = searchParams.get('page')
-  const currentPageIndex = currentPage ? NAV_BAR_ITEMS.findIndex(item => item.key === currentPage) : 0
-  const [current, setCurrent] = React.useState(currentPageIndex)
+  const [api, setApi] = React.useState<CarouselApi>();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const currentPage = searchParams.get('page');
+  const currentPageIndex = currentPage ? NAV_BAR_ITEMS.findIndex((item) => item.key === currentPage) : 0;
+  const [current, setCurrent] = React.useState(currentPageIndex);
   React.useEffect(() => {
     if (!api) {
-      return
+      return;
     }
 
-    setCurrent(api.selectedScrollSnap())
+    setCurrent(api.selectedScrollSnap());
 
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap())
-    })
-  }, [api])
+    api.on('select', () => {
+      setCurrent(api.selectedScrollSnap());
+    });
+  }, [api]);
 
-  const currentNavBarItem = NAV_BAR_ITEMS[current]
+  const currentNavBarItem = NAV_BAR_ITEMS[current];
 
   useEffect(() => {
     if (currentNavBarItem) {
-      router.push(`/?page=${currentNavBarItem.key}`)
+      router.push(`/?page=${currentNavBarItem.key}`);
     }
-  }, [currentNavBarItem, router])
+  }, [currentNavBarItem, router]);
 
-  console.count('MainPage render')
+  console.count('MainPage render');
 
   return (
-    <div className="flex flex-col h-full justify-between w-full">
+    <div className="flex h-full w-full flex-col justify-between">
       <GithubContextProvider>
-        <Carousel setApi={setApi} className="h-full" opts={{
-          loop: true,
-          watchDrag: false,
-          startIndex: currentPageIndex
-        }}>
+        <Carousel
+          setApi={setApi}
+          className="h-full"
+          opts={{
+            loop: true,
+            watchDrag: false,
+            startIndex: currentPageIndex,
+          }}
+        >
           <CarouselContent className="h-full">
             {NAV_BAR_ITEMS.map((item) => {
-              const { key } = item
+              const { key } = item;
               return (
                 <CarouselItem key={key} className="flex justify-center bg-background">
-                  {
-                    key === 'home' && <HomeAssistantIframe view="default_view" className="w-full h-full" />
-                  }
-                  {
-                    key === 'music' && <SpotifyAPIMusicPage />
-                  }
-                  {
-                    key === 'work' && <WorkPage />
-                  }
-                </CarouselItem>)
+                  {key === 'home' && <HomeAssistantIframe view="default_view" className="h-full w-full" />}
+                  {key === 'music' && <SpotifyAPIMusicPage />}
+                  {key === 'work' && <WorkPage />}
+                </CarouselItem>
+              );
             })}
           </CarouselContent>
         </Carousel>
-        <NavBar currentPage={current} setCurrentPage={api?.scrollTo} goToNext={api?.scrollNext} goToPrev={api?.scrollPrev} />
+        <NavBar
+          currentPage={current}
+          setCurrentPage={api?.scrollTo}
+          goToNext={api?.scrollNext}
+          goToPrev={api?.scrollPrev}
+        />
       </GithubContextProvider>
     </div>
-  )
+  );
 }
-
-
-
-
