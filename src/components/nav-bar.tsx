@@ -1,4 +1,6 @@
 import { useGithubContext } from '@/components/github-provider';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { House, LucideGithub, Music } from 'lucide-react';
 import React, { type ReactElement, useEffect } from 'react';
@@ -41,9 +43,13 @@ export function NavBar({
   goToNext?: (jump?: boolean) => void;
   goToPrev?: (jump?: boolean) => void;
 }) {
+  const [showCalendar, setShowCalendar] = React.useState(false);
+
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => goToPrev?.(true),
     onSwipedRight: () => goToNext?.(true),
+    onSwipedUp: () => setShowCalendar(true),
+    onSwipedDown: () => setShowCalendar(false),
   });
 
   const { notifications } = useGithubContext();
@@ -58,9 +64,12 @@ export function NavBar({
             <button
               key={title}
               onClick={() => setCurrentPage?.(index, true)}
-              className={cn('relative rounded-md border bg-background/20 p-2', {
-                'bg-accent-foreground/10': isActive,
-              })}
+              className={cn(
+                'relative rounded-md border border-accent/50 bg-background/20 p-2 transition-colors duration-200 ease-in',
+                {
+                  'bg-accent-foreground/10': isActive,
+                },
+              )}
             >
               {icon}
               {notifications.length > 0 && key === 'work' && (
@@ -70,9 +79,16 @@ export function NavBar({
           );
         })}
       </div>
-      <div className="flex items-center gap-2">
-        <Clock />
-      </div>
+      <Popover open={showCalendar} onOpenChange={setShowCalendar}>
+        <PopoverTrigger asChild>
+          <button>
+            <Clock />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="bg-card-background w-auto rounded-md border-white/80 backdrop-blur-sm" align="end">
+          <Calendar mode="single" selected={new Date()} initialFocus />
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }
@@ -86,7 +102,7 @@ function Clock() {
     return () => clearInterval(interval);
   }, []);
   return (
-    <div className="text-end" suppressHydrationWarning>
+    <div className="xs:text-base text-end text-sm" suppressHydrationWarning>
       {date.toLocaleTimeString('en-US', {
         day: 'numeric',
         month: 'long',

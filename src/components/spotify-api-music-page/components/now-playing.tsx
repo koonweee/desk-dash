@@ -127,7 +127,7 @@ export default function NowPlaying() {
             <button
               className={cn(
                 'absolute inset-0 flex items-center justify-center opacity-0',
-                'transition-all duration-500 ease-in-out',
+                'linear transition-colors transition-opacity duration-300',
                 {
                   'bg-black bg-opacity-55 opacity-80': !!showAlbumArtOverlay,
                 },
@@ -149,9 +149,9 @@ export default function NowPlaying() {
             </button>
           </div>
 
-          <div className="flex w-full flex-col items-center py-4">
+          <div className="flex w-full flex-col items-center py-4 text-foreground/90">
             <div className="max-w-[75%] truncate text-xl">{item?.name ?? 'No music selected'}</div>
-            <div className="max-w-[40%] truncate text-base">{artistsString ?? '-'}</div>
+            <div className="max-w-[75%] truncate text-base">{artistsString ?? '-'}</div>
           </div>
         </>
       </div>

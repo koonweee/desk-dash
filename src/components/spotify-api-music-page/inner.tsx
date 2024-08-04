@@ -2,13 +2,11 @@
 import { AvailableDevices } from '@/components/spotify-api-music-page/components/available-devices';
 import NowPlaying from '@/components/spotify-api-music-page/components/now-playing';
 import UserPlaylists from '@/components/spotify-api-music-page/components/user-playlists';
-import { useSpotifyLogin } from '@/components/spotify-api-music-page/use-spotify-login';
 import { useSpotifyContext } from '@/components/spotify-api-music-page/spotify-provider';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { CaretUpIcon } from '@radix-ui/react-icons';
-import Link from 'next/link';
-import React from 'react';
+import { useSpotifyLogin } from '@/components/spotify-api-music-page/use-spotify-login';
 import { cn } from '@/lib/utils';
+import { CaretUpIcon } from '@radix-ui/react-icons';
+import React from 'react';
 import { useSwipeable } from 'react-swipeable';
 
 export function SpotifyAPIMusicPageInner() {
@@ -45,7 +43,7 @@ export function SpotifyAPIMusicPageInner() {
           <div className="flex w-full flex-col gap-2" {...swipeHandlers}>
             <button className="flex w-full justify-center" onClick={() => setShowPlaylists(!showPlaylists)}>
               <CaretUpIcon
-                className={cn('h-12 w-12 opacity-50 transition-all duration-500 ease-in-out', {
+                className={cn('h-12 w-12 opacity-50 transition-all duration-300 ease-in', {
                   'rotate-180': showPlaylists,
                 })}
               />

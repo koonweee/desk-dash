@@ -44,7 +44,7 @@ export default function MainPage() {
         <GithubContextProvider>
           <Carousel
             setApi={setApi}
-            className="h-full"
+            className="h-full pb-14"
             opts={{
               loop: true,
               watchDrag: false,
@@ -55,8 +55,8 @@ export default function MainPage() {
               {NAV_BAR_ITEMS.map((item) => {
                 const { key } = item;
                 return (
-                  <CarouselItem key={key} className="flex justify-center pb-14">
-                    {key === 'home' && <HomeAssistantIframe view="default_view" className="h-full w-full" />}
+                  <CarouselItem key={key} className="flex justify-center">
+                    {key === 'home' && <HomeAssistantIframe view="default_view" className="h-full w-full px-2 py-4" />}
                     {key === 'music' && <SpotifyAPIMusicPage />}
                     {key === 'work' && <WorkPage />}
                   </CarouselItem>

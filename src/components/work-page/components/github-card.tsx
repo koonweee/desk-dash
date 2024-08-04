@@ -11,31 +11,39 @@ export default function GitHubCard() {
   const [selectedNotificationIds, setSelectedNotificationIds] = React.useState<number[]>([]);
 
   return (
-    <div className="bg-card-background flex flex-col items-center border border-accent">
+    <div className="bg-card-background flex flex-col items-center overflow-hidden rounded border border-white/60">
       <div
         className={cn('flex w-full flex-row items-center justify-between px-4 py-3 text-start text-sm', {
           'border-b border-white/90': isLoading || notifications.length > 0,
         })}
       >
         <div className="">GitHub ({notifications.length})</div>
-        {selectedNotificationIds.length > 0 && (
-          <div className="flex items-center gap-4">
-            <button
-              className="text-xs"
-              onClick={() => {
-                markNotificationsDone(selectedNotificationIds);
-                setSelectedNotificationIds([]);
-              }}
-            >
-              <CheckCircle size={18} />
-            </button>
-            <button className="text-xs" onClick={() => setSelectedNotificationIds([])}>
-              <XCircleIcon size={18} />
-            </button>
-          </div>
-        )}
+
+        <div
+          className={cn('flex items-center gap-4 transition-opacity ease-in', {
+            'opacity-0': selectedNotificationIds.length === 0,
+          })}
+        >
+          <button
+            className="text-xs"
+            disabled={selectedNotificationIds.length === 0}
+            onClick={() => {
+              markNotificationsDone(selectedNotificationIds);
+              setSelectedNotificationIds([]);
+            }}
+          >
+            <CheckCircle size={18} />
+          </button>
+          <button
+            className="text-xs"
+            onClick={() => setSelectedNotificationIds([])}
+            disabled={selectedNotificationIds.length === 0}
+          >
+            <XCircleIcon size={18} />
+          </button>
+        </div>
       </div>
-      <div className="flex max-h-[335px] flex-col overflow-scroll">
+      <div className="no-scrollbar flex max-h-[335px] flex-col overflow-auto">
         {isLoading && Array.from({ length: 5 }).map((_, i) => <SkeletonNotificationCard key={i} />)}
         {notifications.map((notification: GithubNotification, i) => {
           return (
@@ -97,7 +105,7 @@ const NotificationCard = ({
   const isSelected = selectedNotificationIds.includes(idAsNumber);
   return (
     <div
-      className={cn('flex flex-col items-center px-3', {
+      className={cn('flex flex-col items-center px-3 transition-colors ease-in', {
         'bg-accent': isSelected,
       })}
     >
@@ -120,7 +128,7 @@ const NotificationCard = ({
           <span className="text-xs text-muted-foreground">{timeString}</span>
         </div>
 
-        <div className="flex w-full flex-row items-end justify-between">
+        <div className="xs:text-base flex w-full flex-row items-end justify-between text-sm">
           {subject.title}
           <div className="text-xs text-muted-foreground">{reason}</div>
         </div>

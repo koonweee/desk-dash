@@ -34,6 +34,16 @@ export default function UserPlaylists() {
 
   const [selectedPlaylistURI, setSelectedPlaylistURI] = React.useState<string | undefined>(undefined);
 
+  // Clear selected playlist after 3 seconds
+  React.useEffect(() => {
+    if (selectedPlaylistURI) {
+      const timeout = setTimeout(() => {
+        setSelectedPlaylistURI(undefined);
+      }, 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [selectedPlaylistURI, setSelectedPlaylistURI]);
+
   const { items } = userPlaylists ?? {};
   const playlistsFound = items?.length && items.length > 0;
   return (
@@ -50,7 +60,7 @@ export default function UserPlaylists() {
                   {playlistImage ? (
                     <button
                       onClick={() => setSelectedPlaylistURI(selectedPlaylistURI === uri ? undefined : uri)}
-                      className="relative"
+                      className="relative overflow-hidden rounded"
                     >
                       <Image
                         key={index}
@@ -62,16 +72,18 @@ export default function UserPlaylists() {
                       />
                       <div
                         className={cn(
-                          'absolute top-0 flex h-full w-full flex-col items-center justify-center gap-4 bg-background/70 p-4 text-sm',
+                          'linear absolute top-0 flex h-full w-full flex-col items-center justify-center gap-4 bg-background/70 p-4 text-sm transition-opacity duration-300',
                           {
-                            hidden: selectedPlaylistURI !== uri,
+                            'opacity-0': selectedPlaylistURI !== uri,
                           },
                         )}
                       >
                         {name}
                         <button
                           onClick={() => {
-                            playURI(uri);
+                            if (selectedPlaylistURI === uri) {
+                              playURI(uri);
+                            }
                           }}
                         >
                           <PlayCircleIcon size={24} />
