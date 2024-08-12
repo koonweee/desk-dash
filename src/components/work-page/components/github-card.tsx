@@ -3,15 +3,36 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { CheckCircle, XCircleIcon } from 'lucide-react';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import React from 'react';
 
 export default function GitHubCard() {
   const { notifications, isLoading, markNotificationsDone } = useGithubContext();
 
+  // Keep track of number of notifications. If it increased since the last fetch, switch page to Work
+  const [prevLength, setPrevLength] = React.useState<number | undefined>(undefined);
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const nextSearchParams = useSearchParams();
+
+  React.useEffect(() => {
+    if (prevLength !== undefined && notifications.length > prevLength) {
+      setPrevLength(notifications.length);
+      // Check if not already on work page
+      const searchParams = new URLSearchParams(nextSearchParams);
+      if (searchParams.get('page') !== 'work') {
+        searchParams.set('page', 'work');
+        const url = `${pathname}?${searchParams.toString()}`;
+        void router.push(url);
+      }
+    }
+  }, [notifications.length, prevLength, router, pathname, nextSearchParams]);
+
   const [selectedNotificationIds, setSelectedNotificationIds] = React.useState<number[]>([]);
 
   return (
-    <div className="bg-card-background flex flex-col items-center overflow-hidden rounded border border-white/60">
+    <div className="flex flex-col items-center overflow-hidden rounded border border-white/60 bg-card-background">
       <div
         className={cn('flex w-full flex-row items-center justify-between px-4 py-3 text-start text-sm', {
           'border-b border-white/90': isLoading || notifications.length > 0,
@@ -43,7 +64,7 @@ export default function GitHubCard() {
           </button>
         </div>
       </div>
-      <div className="no-scrollbar flex max-h-[335px] flex-col overflow-auto">
+      <div className="no-scrollbar flex max-h-[335px] w-full flex-col overflow-auto">
         {isLoading && Array.from({ length: 5 }).map((_, i) => <SkeletonNotificationCard key={i} />)}
         {notifications.map((notification: GithubNotification, i) => {
           return (
@@ -128,7 +149,7 @@ const NotificationCard = ({
           <span className="text-xs text-muted-foreground">{timeString}</span>
         </div>
 
-        <div className="xs:text-base flex w-full flex-row items-end justify-between text-sm">
+        <div className="flex w-full flex-row items-end justify-between text-sm xs:text-base">
           {subject.title}
           <div className="text-xs text-muted-foreground">{reason}</div>
         </div>
